@@ -2,18 +2,14 @@
 void StraightenByWall() {
   digitalWrite(LEDR, LOW);
   left(30);
-  delay(1000);
   right();
-  readDistance();
+  readWriteDistanceArray();
   int smallest = INT_MAX;
-  while ((readDistance() - smallest) < 20) {
-    if ((distance_val - smallest) > 20) {
-      Serial.println("hmmmmmmmmmmmm");
-      break;
-    }
-    smallest = readDistance();
-    delay(100);
+  while ((readDistance() - smallest) < 5) {
+    delay(1);
+    smallest = min(readDistance(), smallest);
   }
+  left(3); // compensate for the bit of turning that happened after the smallest was detected
   stop();
   digitalWrite(LEDR, HIGH);
 }
@@ -33,6 +29,9 @@ void opfer() {
   while (distance_val >= opfer_wall_threshold) {
     StraightenByWall();
     straight(1.8);
+    delay(500);
     for (int i = 0; i < 5; i++) readDistance();
   }
+  stop();
+  delay(5000);
 }
